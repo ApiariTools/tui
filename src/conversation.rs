@@ -86,7 +86,7 @@ pub fn render_conversation<'a>(
                         Span::styled(
                             format!("  {label}:"),
                             Style::default()
-                                .fg(theme::FROST)
+                                .fg(theme::MINT)
                                 .add_modifier(Modifier::BOLD),
                         ),
                         ts_span,
