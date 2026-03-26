@@ -22,6 +22,8 @@ pub enum ConversationEntry {
         is_error: bool,
         collapsed: bool,
     },
+    /// Assistant message that requires user response.
+    Question { text: String, timestamp: String },
     /// Status message (e.g. "Session started", "Rate limited").
     Status { text: String },
 }
@@ -195,6 +197,32 @@ pub fn render_conversation<'a>(
                     )));
                 }
             }
+            ConversationEntry::Question { text, timestamp } => {
+                let in_same_turn = is_continuation_of_assistant_turn(entries, i);
+                if !in_same_turn {
+                    lines.push(Line::from(""));
+                    let ts_span = dedup_timestamp(timestamp, &mut last_shown_ts);
+                    lines.push(Line::from(vec![
+                        Span::styled(
+                            format!("  \u{2753} {label}:"),
+                            Style::default()
+                                .fg(theme::HONEY)
+                                .add_modifier(Modifier::BOLD),
+                        ),
+                        ts_span,
+                    ]));
+                } else {
+                    // Even in continuation mode, show a visual marker so
+                    // action-needed messages are always distinguishable.
+                    lines.push(Line::from(Span::styled(
+                        "  \u{2753}",
+                        Style::default()
+                            .fg(theme::HONEY)
+                            .add_modifier(Modifier::BOLD),
+                    )));
+                }
+                lines.extend(markdown::render_markdown(text));
+            }
             ConversationEntry::Status { text } => {
                 lines.push(Line::from(""));
                 lines.push(Line::from(Span::styled(
@@ -217,7 +245,9 @@ fn is_continuation_of_assistant_turn(entries: &[ConversationEntry], idx: usize) 
     }
     for j in (0..idx).rev() {
         match &entries[j] {
-            ConversationEntry::AssistantText { .. } => return true,
+            ConversationEntry::AssistantText { .. } | ConversationEntry::Question { .. } => {
+                return true;
+            }
             ConversationEntry::ToolCall { .. } => continue,
             _ => return false,
         }
