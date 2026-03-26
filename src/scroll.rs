@@ -9,10 +9,10 @@
 //! counts the same way ratatui does (`ceil(line_width / viewport_width)`), keeping
 //! auto-scroll pinned to the real bottom.
 
+use ratatui::Frame;
 use ratatui::layout::Rect;
 use ratatui::text::{Line, Text};
 use ratatui::widgets::{Block, Paragraph, Wrap};
-use ratatui::Frame;
 
 /// Scroll state for a scrollable text region.
 ///

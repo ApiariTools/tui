@@ -33,11 +33,7 @@ fn preprocess_markdown(text: &str) -> String {
     while i < len {
         // Detect inline numbered list items: non-newline followed by "N. " where N is 1-9
         // e.g., "...settings  2. Investigate" → "...settings\n2. Investigate"
-        if i + 3 < len
-            && chars[i].is_ascii_digit()
-            && chars[i + 1] == '.'
-            && chars[i + 2] == ' '
-        {
+        if i + 3 < len && chars[i].is_ascii_digit() && chars[i + 1] == '.' && chars[i + 2] == ' ' {
             // Check if preceded by text (not start-of-line)
             let prev_is_text = i > 0 && chars[i - 1] != '\n';
             // But only if this looks like a list item (next char after space is uppercase or backtick)
