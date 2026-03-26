@@ -211,6 +211,15 @@ pub fn render_conversation<'a>(
                         ),
                         ts_span,
                     ]));
+                } else {
+                    // Even in continuation mode, show a visual marker so
+                    // action-needed messages are always distinguishable.
+                    lines.push(Line::from(Span::styled(
+                        "  \u{2753}",
+                        Style::default()
+                            .fg(theme::HONEY)
+                            .add_modifier(Modifier::BOLD),
+                    )));
                 }
                 lines.extend(markdown::render_markdown(text));
             }
