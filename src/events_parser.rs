@@ -153,9 +153,7 @@ pub fn parse_events(path: &Path) -> Vec<ConversationEntry> {
             AgentEvent::SessionResult {
                 turns, cost_usd, ..
             } => {
-                let cost_str = cost_usd
-                    .map(|c| format!(", ${:.2}", c))
-                    .unwrap_or_default();
+                let cost_str = cost_usd.map(|c| format!(", ${:.2}", c)).unwrap_or_default();
                 entries.push(ConversationEntry::Status {
                     text: format!("Session complete ({} turns{})", turns, cost_str),
                 });
